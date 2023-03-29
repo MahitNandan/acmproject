@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.108.0">
+    <title>Password Generator and Analyser</title>
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/checkout/">
+    <link href="https://getbootstrap.com/docs/5.3/dist/css/bootstrap.min.css" rel="stylesheet" >
+
+<link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+<script defer src="https://pyscript.net/latest/pyscript.js"></script>
+<!-- styles -->
+
+
+  </head>
+  <body class="bg-light">
+     
+
+            
+    <div class="container">
+  <main>
+    
+    <div class="py-5 text-center">
+      <img class="d-block mx-auto mb-4" src="icon.png" alt="" width="100" height="100">
+      <h2>Password Generator and Analyser</h2>
+      <p class="lead">Generate personalized passwords and analyse password strength.</p>
+      
+    </div>
+
+    <div class="row g-5">
+      <div class="col-md-5 col-lg-4 order-md-last">
+        <h4 class="d-flex justify-content-between align-items-center mb-3">
+          <span class="text-primary">Password Analyser</span>
+        </h4>
+        
+
+        <!-- <form class="card p-2"> -->
+          <div class="input-group">
+            <input id="def" type="text" class="pana form-control" placeholder="Enter Password">
+            <button id="analyse" type="submit" class="btn btn-secondary">Analyse</button>          
+
+            <py-config>
+              packages = ["numpy"]
+            </py-config>
+<py-script>
+from pyodide import create_proxy
+runButton=js.document.getElementById('analyse')
+def pwd_analyse(event):
+  import re
+  from difflib import SequenceMatcher 
+  import numpy as np
+  password=js.document.getElementById('def').value
+  patterns=['gan', 'ure', 'kata', 'rina', 'kat', 'rin', 'west', 'she', 'incognit', 'illie', 'bill', 'lineage', 'age123', 'ali', 'emon', 'crack', 'gen','a1b2', 'ilove', 'ie1', 'times', 'mes', 'what', 'miss', 'wwwww', 'brandon', 'brave', 'med', 'mohamme', 'hamm', 'daniel', 'ley', 'y12', 'ard', 'dor', 'the', 'leedsu', 'iddqd8', 'wood', 'micr', 'bug', 'ladybug', 'buffy', 'uffy', 'sophie', 'laketaho', 'ket', 'pic', 'man', 'onal', 'rona', 'nald', 'way', 'ent', 'sarah', 'ton', 'jgj', 'gjhn', 'ste', 'ucks', 'let', 'key', 'fuck', 'one', 'ner', 'oner', 'loo', 'georg', 'erchief', 'master', 'ick', 'alex', 'ania', 'nia', 'ani', '123456789', '123456', 'ELE', '111111', 'erico', 'sych', 'psych', 'anthon', 'ant', 'ny1', 'ierr', 'red', 'fre', 'fred', 'heel', 'tar', 'tarheel', 'hee', 'fktrc', 'fkt', 'petite', 'etit', 'eti', 'bart', 'art', 'ette', 'laudi', 'claudiu', 'lau', 'mar', 'tor', 'victo', 'tori', 'mpton', 'hampton', 'pok', 'omas', 'toma', 'tone', 'get', 'geto', 'etone', 'dfcbk', 'dfcbkmtd', 'asdfgh12', 'asdfgh', 'asd', 'angel', 'golfer', 'golfer2', 'golf', 'fer', 'nny', 'simon', 'ock', 'aze', 'zer', 'oof', 'chris', 'ris', 'ewa', 'pro', 'ron', 'ipper', 'ets', 'hyper', 'ter123', 'azz', 'ster', 'big', 'lat', 'boob', 'ers', 'start', 'art1', 'sta', 'star', 'ippo', 'hippo', 'ipp', 'uke', 'jose', 'teddy', 'teddyb', 'ONNIE', 'lan', 'ANN', 'ANNON', 'dre', 'reyf', 'password', 'min', 'egirl', 'girl', 'ceg', 'surfin', 'lvbnhb', 'a20', '2002', 'newpass', 'new', 'gged', 'agge', 'ged', 'pets', 'trumpet', 'sco', 'nger', 'bur', 'blue', 'andy', 'run', 'illy', 'lly', 'kers', 'sun', 'ball', 'rri', 'mor', 'rocket', 'goc', 'edward', 'harlie', 'charlie', 'charl', 'iss', 'bastar', 'meri', 'omm', 'mmy', 'momm', '123', 'cab', 'ible', 'indi', 'head', 'edskins', '2010', 'erlin', 'erlin1', 'lin1', 'merlin', 'in1', 'lin', 'er1', 'good', 'asa', 'asan', 'mer', 'ephan', 'tephanie', 'cruise', 'xplo', 'explo', 'ally', 'apple', 'apples', 'appl', 'les', 'app', 'str', 'shan', 'shane1', 'shane', 'sha', 'ari', 'ustin', 'fish1', 'fish', 'ish1', 'char', 'cha', 'ain', 'bos', 'un1', 'mike', 'cobra', 'weapon', 'noo', 'snoo', 'aaaa', 'aaa', 'aaaaa', 'qwert', 'qwerty', 'qwer', 'dog', 'rea', 'kore', 'kor', '1234', 'music', 'katie', 'ati', 'layer', 'pla', '1qaz', 'qqqq', 'qqq', '5150', 'der', 'ander', 'ing', 'ora', 'prior', 'pri', 'SCO', 'sexy', 'atali', 'tali', 'sm4llvil', 'ena', 'foot', 'qwertyuiop12345', 'cele', 'lit', 'kis', 'rry', 'erry', '54321', 'aba', 'dad', 'cnbr', 'nbr', 'birthday', 'yjdf', 'jdf', 'roman', 'john', 'imm', 'can', 'anon1', 'non', 'ell', 'well', 'iddle', 'dles', 'hoo', 'ester', 'fytxrf', 'asdf', 'asdfg', 'cape', 'ole', 'pol', 'abell', 'hot', 'tre', 'hotr', 'hol', 'qazwsxedc1', 'qazwsxedc', 'bubb', 'ite', 'favorite', 'avo', 'fire', 'kman', 'uck', 'ckman', 'che', 'ar1', 'celtic', 'elt', 'black', 'ara', 'ova', 'camel', 'came', 'cam', 'ela', 'mnbvcxz', 'vert', 'pervert', 'joe', 'losangel', 'ero', 'cool', 'ool', 'boy', 'ERS', 'diamond', 'ORD', 'squi', 'olo', '12345', 'werty1234', 'werty12345', 'oron', 'ronto', 'toro', 'tto', 'james', 'er22', 'tiger', 'madelein', 'del', 'RIA', 'MARI', 'MAR', 'ugs', 'dragon', 'night', 'cali', 'kin', 'onnie', 'nnie', 'ord', 'eggie', 'gie', 'reg', 'ller', 'alle', '200', 'ter', 'oun', 'ever', 'jesus', 'sweet', 'krist', '777', 'corpio', 'orpio', 'ach', 'en1', 'even1', 'anderso', 'erso', 'ders', 'anders', 'blood', 'lood', 'banan', 'david', 'tha', 'abet', 'elizabe', 'bet', 'ford', 'inte', 'zxc', 'wil', 'uddy', 'son', 'mag', 'guy', 'pan', 'abela', 'bab', 'land', 'atch', 'long', 'zzzz1', 'zzzz', 'ill', 'maxim', 'maximil', 'imi', 'oulou', 'ulou', 'mou', 'oul', 'ran', 'soccer', 'ashley', 'bingo', 'ack', 'bon', 'fffff', 'peter', '1995', 'dima', 'dima19', '199', 'a19', 'a1995', 'alesh', 'ales', 'lesh', 'esha', 'ker', 'super', 'tro', 'oot', 'ootball', 'BIG', 'atl', 'andro', 'sand', 'sandr', 'san', 'bigd', 'bigdu', 'olphin1', 'phin', 'orno', 'fhtym', 'gfh', 'ling', 'ili', 'free', 'sus', 'sex', 'a198', 'anna19', '1986', 'minota', 'des', 'destro', 'ico', 'mustan', 'guita', 'ndrea', 'bitch', 'cent', 'clement', 'ment', 'lon', 'onl', 'con', 'abby', '234', '1q2', '2345', 'ore', 'horny', 'champ', 'gemini1', 'emin', 'ini11', 'emi', 'rill', 'dio', 'adi', 'adio', 'hole', 'pa123', 'a123', 'ann', 'nne', 'ean', 'ave', 'jxrf', 'har', 'pee', 'per', 'ance', '3qq', '123123q', 'linda', 'martin', 'shi', 'umpy', '6666', 'itty', 'custom', 'cus', 'ust', 'jack', 'ass', 'pass', 'green', 'call', 'lla', 'rami', 'ett', 'llllll', 'line', 'ome', 'hello', 'flb', 'byf', 'dar', 'rrrr', 'rrrrrr']
+  exemplars=['blackdog', 'golf1', 'enter', 'libero', 'comicsans', 'gfhjkl', 'mora', 'fluke', 'dfytxrf', 'edwardcullen', 'devil', 'samba1', 'keith', 'dog123', 'jeffery', 'PUSSIES', 'TINA', 'master2', 'orion2', 'cumshots', 'cleaners', 'stell', 'lollo', 'earth1', 'deecee', 'blown', 'boston', 'bertha1', 'bowler', 'grow', 'arie', 'jacks', 'fallout3', 'deamon', 'gauss', 'soccer3', '2606642yra', 'scarred', 'eastwood', 'peaches', 'lucky1', 'copyright', 'firewire', 'berlin1', 'pantys', 'websolutionssu', 'blue25', 'michaell', 'nathal', 'bigtim', 'mala', 'fuckyou7', 'jena', 'mani', 'dragon23', 'eremin', 'nation', '8PHroWZ622', 'littlecunt', 'poop69', 'josiah', 'melony', 'korea', 'iloveyou2', 'bmwm3', 'beto', 'unicron', 'alex1998', 'pookie', 'sigma', 'entertainment', 'sabado', 'hogman', 'Rusty1', 'tadlock', 'cfvfzcxfcnkbdfz', 'h_froeschl7', 'stangs', 'petros', 'cristan', 'kimota', 'ronnie1', 'MADMAN', 'grammar', 'fyutkbyrf', 'hjvfyjdf', 'bobette', 'fishon', 'BEER', 'picker', 'artboy', 'banan', 'CARTER', 'late', 'chane', 'spurs1', 'bigdadd', 'contest', 'foutre', '1q2w3', 'valenti', 'cooking1', 'hubble', 'silver69', 'money2', 'horatio', 'amelia', 'bobbbb', 'brand', 'dindin', 'pussy50', 'bruce', 'alpha1', 'azxcvbnm', 'rachel1', 'nhfdvfnjkju123', 'boogies', 'mooser', 'stoker', 'fred1', 'twisty', 'ireland', 'internal', 'david15', '3f3fphT7oP', 'merger', 'nine', 'nightime', 'severian', 'teenie', 'huangjin1987', 'revers', 'fallon', 'gopats', 'Kimberly', 'sanfran', 'titotito', 'zsxmr7sztmr', 'hello123', 'sally', 'boob', 'asd321', 'redhat', 'liao', 'dima1996', 'olaola', 'ballet', 'michigan', 'redsea', 'heller', 'hanson', 'lurcher', 'dude1', 'renard', 'dance', 'raser', 'elizabe', 'crazy4u', 'sexygirl', 'LAUREN', 'passwordpassword', 'den1020834880', 'aviles', 'munter', 'kenshin1', 'deaddead', '123456789a', 'wildcat7', 'mine11', 'newera', 'miras', 'kissmy', 'add123', 'ratcat', 'bureau', 'a12345', 'pelus', 'shocker1', 'forfar', 'audia6', '121212q', 'romana', 'ariana', 'tree1', 'seren', 'savant', 'hummer', 'moocow', 'feline', 'killer21', 'mcgill', 'luvluv', 'shop', 'solene', 'cunning', 'bunty123', 'vladimi', 'hither', 'ragger', 'killas', '1967gto', 'a7777777', 'Year2005', 'bubbas', 'austi', 'edcrfv', 'steph1', 'kassie', 'infest', 'alone', '111111d', 'crjhjcnm', 'sadie123', 'passion', 'marcelo1', 'sasha', 'hacke', 'wesley', 'thrush', 'sammyg', 'chester', 'malina', 'papas', 'empress', 'andrew', 'xxxp455w0rd5', 'chelly', 'couple', 'murano', 'gfhfif', 'steelroa', 'uhfvjnf', 'Guitar', 'bahama', 'lapper', 'qweasdzx', 'joker123', 'blueboy', 'tatonka', 'backbone', 'sachin', 'Phillip', 'poolboy', 'italia', 'elena1977', 'player22', 'alex1', 'ytdpkjvfti', 'explosiv', 'charoot', 'LOST4815162342', 'spide', 'werder', 'carlin', 'check1', 'qaz123', 'rosalie', 'maggie', 'altair', 'basses', 'george1', 'chanchal', 'mention', 'cottage1', 'socks', 'anton1992', 'caveman1', 'pokemon', 'taro', 'natasa', 'pier', 'airman', 'Hd764nW5d7E1vbv', 'pinpin', 'SCOOBY', 'honor', 'scorpio', 'hott', 'pirelli', 'ipo54tj45uy856', 'Yellow', 'ababagalamaga', 'ziff', '1234567z', 'tiggy1', 'constitution', 'gangsta', 'gthtrfnbgjkt', 'mama12', 'popova', 'fynfyfyfhbde', 'assa123', 'favorite', 'basketball1', 'cristo', 'payman', 'strats', 'runn', 'chiens', 'bigdon', 'beating', 'dudelove', 'lhbjkjubz2957704', 'picass', 'billing', 'LITTLE', 'jimbo1', 'canon1', 'pepper12', 'NICK1234-rem936', 'loser1', 'angeli', 'Californ', 'tootall', 'chipper1', 'darren', 'siege', 'junior8', 'alex2010', 'cheese2', 'franki', 'netscape', 'getin1', 'elliott', 'baltimore', 'springs', 'kakawka', '237081a', 'fink', 'chippy', 'butte', 'daniel20', 'mariya', 'janet', 'greentea', 'barman', 'elric1', 'motorhead', 'theta', 'thunder', 'mess', 'nikolay', 'freetime', 'honda2000', 'lickin', 'sexyboy', 'dustoff', 'fcnfkfdbcnf', 'vfiekmrf', 'john1', 'schwab', 'typer', '070793monolit', 'vitebsk', 'sampson1', 'Fffff1', 'INSTALLDEVIC', 'spanky', 'yfnecz', 'skate1', 'loveit', 'anutka', 'hardcore', 'shirt', 'Purple', 'imcool', 'banderos', 'hokies', 'bulldog', 'light2', '1234ab', 'papito', 'june23', 'beaks', 'banker', 'morgan', 'august20', '123qazwsxedc', 'burnside', 'huntsman', 'coors', 'beowolf', 'rifle', 'oneway', 'robotic', 'mather', 'emile', 'cascade', 'R030989', 'chrisi', 'cando', 'baba', 'maddy1', 'teeter', 'snack', 'linus1', 'rimini', 'punch', 'ready', 'deltas', 'conny', 'super', 'harry2', 'tiger00', 'conger', 'chimay', 'JASON', 'actors', 'polaris', 'famili', 'farley', 'merit', 'calle', 'westerns']
+  ret=''
+  v=str(password)
+  f=type(v)
+  def word2vec(word):
+    from collections import Counter
+    from math import sqrt
+
+    # count the characters in word
+    cw = Counter(word)
+    # precomputes a set of the different characters
+    sw = set(cw)
+    # precomputes the "length" of the word vector
+    lw = sqrt(sum(c*c for c in cw.values()))
+
+    # return a tuple
+    return cw, sw, lw
+
+  def cosdis(v1, v2):
+    # which characters are common to the two words?
+    common = v1[1].intersection(v2[1])
+    # by definition of cosine distance we have
+    return sum(v1[0][ch]*v2[0][ch] for ch in common)/v1[2]/v2[2]
+  def longest_Substring(s1,s2):
+    seq_match=SequenceMatcher(None,s1,s2)
+    match = seq_match.find_longest_match(0, len(s1), 0, len(s2)) 
+    # return the longest substring 
+    if (match.size!=0): 
+      return (s1[match.a: match.a + match.size])  
+    else: 
+      return ''
+  #js.alert(v)
+  #js.alert(f)
+  if v == "\n" or v == " ":
+    ret="Password cannot be a newline or space!" 
+  
+  elif 8 <= len(v) <= 20:
+    if v.isalpha() and len(ret)==0:
+      ret="Weak Password: Contains only alphabets"
+    elif v.isnumeric() and len(ret)==0:
+      ret="Weak Password:Contains only numbers"
+    #checks for patterns in password
+    for i in range(len(exemplars)):
+      if cosdis(word2vec(v),word2vec(exemplars[i]))>0.5 and len(longest_Substring(v,exemplars[i]))>2:
+        ret="Weak Password : Weak patterns have been recognized in the password"
+    for pattern in patterns:
+      if (pattern in v) and len(ret)==0:
+        ret= "Weak Password: Weak patterns have been recognized in the password"
+    # checks for occurrence of a character 
+    # three or more times in a row
+    
+    if re.search(r'(.)\1\1', v):
+      if len(ret)==0:
+        ret= "Weak Password: Same character repeats three or more times in a row"
+    # checks for occurrence of same string 
+    # pattern( minimum of two character length)
+    # repeating
+    elif re.search(r'(..)(.*?)\1', v) and len(ret)==0:
+      ret="Weak password: Same string pattern repetition"
+    else:
+      if len(ret)==0:
+        ret="Strong Password!"
+  else:
+    ret="Password length must be 8-20 characters!"
+  #js.alert(ret)
+  js.document.getElementById('xyz').innerHTML=ret
+cc=create_proxy(pwd_analyse)
+runButton.addEventListener("click",cc)
+</py-script>
+          </div>
+        <!-- </form> -->
+        <p class="lead" id="xyz"></p>
+      </div>
+      <div class="col-md-7 col-lg-8">
+        <h4 class="mb-3">Password Generator</h4>
+        <!-- <form class="needs-validation" novalidate > -->
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <label for="firstName" class="form-label" >First name</label>
+              <input name="firstName" type="text" class="pgen form-control" id="firstName" minlength="3" placeholder="" value="" required>
+              <div class="invalid-feedback">
+                Valid first name is required.
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <label for="lastName" class="form-label">Last name</label>
+              <input name="lastName" type="text" class="pgen form-control" id="lastName" placeholder="" value="" required>
+              <div class="invalid-feedback">
+                Valid last name is required.
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+                <label for="favColor" class="form-label">Favourite Color</label>
+                <input name="fColor" type="text" class="pgen form-control" id="lastName" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                  Valid Answer is required.
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <label for="favDest" class="form-label">Favourite Destination</label>
+                <input name="fDest" type="text" class="pgen form-control" id="destination" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                  Valid Answer is required.
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <label for="favSong" class="form-label">Favourite Song</label>
+                <input name="fSong" type="text" class="pgen form-control" id="song" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                  Valid Answer is required.
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <label for="favMovie" class="form-label">Favourite Movie</label>
+                <input name="fMovie" type="text" class="pgen form-control" id="movie" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                  Valid Answer is required.
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <label for="favSport" class="form-label">Favourite Sport</label>
+                <input name="fSport" type="text" class="pgen form-control" id="sport" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                  Valid Answer is required.
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <label for="favCountry" class="form-label">Your Country</label>
+                <input name="fCount" type="text" class="pgen form-control" id="country" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                  Valid Answer is required.
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <label for="favFood" class="form-label">Favourite Food</label>
+                <input name="fFood" type="text" class="pgen form-control" id="food" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                  Valid Answer is required.
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <label for="favCity" class="form-label">City you were born in</label>
+                <input name="fCity" type="text" class="pgen form-control" id="city" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                  Valid Answer is required.
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <label for="Current Age" class="form-label">What is Your Age</label>
+                <input name="age" type="text" class="pgen form-control" id="age" placeholder="Numeric Values Only" value="" required>
+                <div class="invalid-feedback">
+                  Valid Answer is required.
+                </div>
+            </div>
+            
+            <div class="col-sm-6">
+                <label for="favNum" class="form-label">Favourite Number</label>
+                <input name="fNumber" type="text" class="pgen form-control" id="num" placeholder="Numeric Values Only" value="" required>
+                <div class="invalid-feedback">
+                  Valid Answer is required.
+                </div>
+            </div>
+            
+
+          <hr class="my-4">
+          <button id="generate" class="w-100 btn btn-primary btn-lg" type="submit" >Generate Passwords</button>
+          <p class="lead" id="gen_pwd">Password:</p>
+
+<py-script>
+
+from pyodide import create_proxy
+run1Button=js.document.getElementById('generate')
+def pwd_generate(event):
+  import random 
+  words=js.document.getElementsByClassName("pgen");
+  words=list(words)
+  for i in range(len(words)):
+    words[i]=str(words[i].value)
+  count=0
+  for i in range(10):
+    if len(words[i])==0:
+      count+=1
+  if count>8:
+    js.alert("Please will atleast two text boxes.")
+    return
+  if len(words[-1])==0 or len(words[-2])==0:
+    js.alert("Please will both numeric values")
+    return
+  try:
+    n1=int(words[-1])
+  except:
+    js.alert("Non numeric values enetered:"+words[-1])
+    return
+  try:
+    n1=int(words[-2])
+  except:
+    js.alert("Non numeric values enetered:"+words[-2])
+    return
+  for i in range(10):
+    if len(words[i])!=0:
+      for j in words[i]:
+        if ' ' in words[i]:
+          js.alert("Please refrain from using spaces:"+words[i])
+          return
+  numbers=[words[-2],words[-1]]
+  words.pop()
+  words.pop()
+  temp=[]
+  for i in words:
+    if len(i)!=0:
+      temp.append(i)
+  words=temp
+  special_chars = ['@','$','!','#','%','&','(',')','0','3','8','<','|']
+  punc = ['@','*','+','-',':','”','/','\\','~','?','[',']','{','}','$','!','#','%','&','(',')','_' ,'<','|']
+  alphabets = ['a','s','i','r','x','q','c','j','o','e','b','k','l']
+  numbername = ["zero", "one", "two", "three",
+              "four", "five", "six", "seven", "eight", "nine"]
+  number2 = ["0","1", "2", "3", "4", "5", "6", "7", "8", "9"]
+  c2s = {}
+  n2s={}
+  for i in range(13):
+    c2s[alphabets[i]]=special_chars[i]
+  for i in range(10):
+    n2s[number2[i]] = numbername[i]
+  def randomly_capitalize(s):
+    result = ''
+    for char in s:
+      flag = random.randint(0, 1)
+      if flag == 0:
+        result += char.upper()
+      else:
+        result += char.lower()
+    return result
+  def merge_randomly(str1,str2):
+    result = ''
+    flag = random.randint(0, 1)
+    if flag == 0:
+      result = str1 + str2
+    else:
+      result = str2 + str1
+    return result,flag
+  def charToSpecial(s):
+    for char in s:
+      if char in c2s:
+        s = s.replace(char,c2s[char])
+        flag[i]=1
+    return s
+  def numToSpecial(s):
+    for i in range(len(s)):
+      num=s[i]
+      if flag[i]==0:
+        if num in n2s:
+          s=s.replace(num,n2s[num])
+          break
+    return s
+  def insert_number(s,n,f,str1,str2):
+    flag = random.randint(0, 2)
+    if flag == 0:
+      return n+s
+    elif flag == 2:
+      return s+n
+    else:
+      if f==0:
+        return s[:len(str1)]+n+s[len(str1):]
+      else:
+        return s[:len(str2)]+n+s[len(str2):]
+  def add_punctuation(s):
+    return s+random.choice(punc)
+  import re
+  def pwd_analyse(password):
+    patterns=['gan', 'ure', 'kata', 'rina', 'kat', 'rin', 'west', 'she', 'incognit', 'illie', 'bill', 'lineage', 'age123', 'ali', 'emon', 'crack', 'gen', 'ilove', 'ie1', 'times', 'mes', 'what', 'miss', 'wwwww', 'brandon', 'brave', 'med', 'mohamme', 'hamm', 'daniel', 'ley', 'y12', 'ard', 'dor', 'the', 'leedsu', 'iddqd8', 'wood', 'micr', 'bug', 'ladybug', 'buffy', 'uffy', 'sophie', 'laketaho', 'ket', 'pic', 'man', 'onal', 'rona', 'nald', 'way', 'ent', 'sarah', 'ton', 'jgj', 'gjhn', 'ste', 'ucks', 'let', 'key', 'fuck', 'one', 'ner', 'oner', 'loo', 'georg', 'erchief', 'master', 'ick', 'alex', 'ania', 'nia', 'ani', '123456789', '123456', 'ELE', '111111', 'erico', 'sych', 'psych', 'anthon', 'ant', 'ny1', 'ierr', 'red', 'fre', 'fred', 'heel', 'tar', 'tarheel', 'hee', 'fktrc', 'fkt', 'petite', 'etit', 'eti', 'bart', 'art', 'ette', 'laudi', 'claudiu', 'lau', 'mar', 'tor', 'victo', 'tori', 'mpton', 'hampton', 'pok', 'omas', 'toma', 'tone', 'get', 'geto', 'etone', 'dfcbk', 'dfcbkmtd', 'asdfgh12', 'asdfgh', 'asd', 'angel', 'golfer', 'golfer2', 'golf', 'fer', 'nny', 'simon', 'ock', 'aze', 'zer', 'oof', 'chris', 'ris', 'ewa', 'pro', 'ron', 'ipper', 'ets', 'hyper', 'ter123', 'azz', 'ster', 'big', 'lat', 'boob', 'ers', 'start', 'art1', 'sta', 'star', 'ippo', 'hippo', 'ipp', 'uke', 'jose', 'teddy', 'teddyb', 'ONNIE', 'lan', 'ANN', 'ANNON', 'dre', 'reyf', 'password', 'min', 'egirl', 'girl', 'ceg', 'surfin', 'lvbnhb', 'a20', '2002', 'newpass', 'new', 'gged', 'agge', 'ged', 'pets', 'trumpet', 'sco', 'nger', 'bur', 'blue', 'andy', 'run', 'illy', 'lly', 'kers', 'sun', 'ball', 'rri', 'mor', 'rocket', 'goc', 'edward', 'harlie', 'charlie', 'charl', 'iss', 'bastar', 'meri', 'omm', 'mmy', 'momm', '123', 'cab', 'ible', 'indi', 'head', 'edskins', '2010', 'erlin', 'erlin1', 'lin1', 'merlin', 'in1', 'lin', 'er1', 'good', 'asa', 'asan', 'mer', 'ephan', 'tephanie', 'cruise', 'xplo', 'explo', 'ally', 'apple', 'apples', 'appl', 'les', 'app', 'str', 'shan', 'shane1', 'shane', 'sha', 'ari', 'ustin', 'fish1', 'fish', 'ish1', 'char', 'cha', 'ain', 'bos', 'un1', 'mike', 'cobra', 'weapon', 'noo', 'snoo', 'aaaa', 'aaa', 'aaaaa', 'qwert', 'qwerty', 'qwer', 'dog', 'rea', 'kore', 'kor', '1234', 'music', 'katie', 'ati', 'layer', 'pla', '1qaz', 'qqqq', 'qqq', '5150', 'der', 'ander', 'ing', 'ora', 'prior', 'pri', 'SCO', 'sexy', 'atali', 'tali', 'sm4llvil', 'ena', 'foot', 'qwertyuiop12345', 'cele', 'lit', 'kis', 'rry', 'erry', '54321', 'aba', 'dad', 'cnbr', 'nbr', 'birthday', 'yjdf', 'jdf', 'roman', 'john', 'imm', 'can', 'anon1', 'non', 'ell', 'well', 'iddle', 'dles', 'hoo', 'ester', 'fytxrf', 'asdf', 'asdfg', 'cape', 'ole', 'pol', 'abell', 'hot', 'tre', 'hotr', 'hol', 'qazwsxedc1', 'qazwsxedc', 'bubb', 'ite', 'favorite', 'avo', 'fire', 'kman', 'uck', 'ckman', 'che', 'ar1', 'celtic', 'elt', 'black', 'ara', 'ova', 'camel', 'came', 'cam', 'ela', 'mnbvcxz', 'vert', 'pervert', 'joe', 'losangel', 'ero', 'cool', 'ool', 'boy', 'ERS', 'diamond', 'ORD', 'squi', 'olo', '12345', 'werty1234', 'werty12345', 'oron', 'ronto', 'toro', 'tto', 'james', 'er22', 'tiger', 'madelein', 'del', 'RIA', 'MARI', 'MAR', 'ugs', 'dragon', 'night', 'cali', 'kin', 'onnie', 'nnie', 'ord', 'eggie', 'gie', 'reg', 'ller', 'alle', '200', 'ter', 'oun', 'ever', 'jesus', 'sweet', 'krist', '777', 'corpio', 'orpio', 'ach', 'en1', 'even1', 'anderso', 'erso', 'ders', 'anders', 'blood', 'lood', 'banan', 'david', 'tha', 'abet', 'elizabe', 'bet', 'ford', 'inte', 'zxc', 'wil', 'uddy', 'son', 'mag', 'guy', 'pan', 'abela', 'bab', 'land', 'atch', 'long', 'zzzz1', 'zzzz', 'ill', 'maxim', 'maximil', 'imi', 'oulou', 'ulou', 'mou', 'oul', 'ran', 'soccer', 'ashley', 'bingo', 'ack', 'bon', 'fffff', 'peter', '1995', 'dima', 'dima19', '199', 'a19', 'a1995', 'alesh', 'ales', 'lesh', 'esha', 'ker', 'super', 'tro', 'oot', 'ootball', 'BIG', 'atl', 'andro', 'sand', 'sandr', 'san', 'bigd', 'bigdu', 'olphin1', 'phin', 'orno', 'fhtym', 'gfh', 'ling', 'ili', 'free', 'sus', 'sex', 'a198', 'anna19', '1986', 'minota', 'des', 'destro', 'ico', 'mustan', 'guita', 'ndrea', 'bitch', 'cent', 'clement', 'ment', 'lon', 'onl', 'con', 'abby', '234', '1q2', '2345', 'ore', 'horny', 'champ', 'gemini1', 'emin', 'ini11', 'emi', 'rill', 'dio', 'adi', 'adio', 'hole', 'pa123', 'a123', 'ann', 'nne', 'ean', 'ave', 'jxrf', 'har', 'pee', 'per', 'ance', '3qq', '123123q', 'linda', 'martin', 'shi', 'umpy', '6666', 'itty', 'custom', 'cus', 'ust', 'jack', 'ass', 'pass', 'green', 'call', 'lla', 'rami', 'ett', 'llllll', 'line', 'ome', 'hello', 'flb', 'byf', 'dar', 'rrrr', 'rrrrrr']
+    ret=''
+    v=str(password)
+    if 8 <= len(v) <= 20:
+      #checks for patterns in password
+      for pattern in patterns:
+        if pattern in v:
+          return False
+      # checks for occurrence of a character 
+      # three or more times in a row
+      if re.search(r'(.)\1\1', v):
+        return False
+      # checks for occurrence of same string 
+      # pattern( minimum of two character length)
+      # repeating
+      elif re.search(r'(..)(.*?)\1', v) :
+        return False
+      else:
+        return True
+  while True:
+    temp = list(words)
+    string1 = random.choice(temp)
+    temp.remove(string1)
+    string2 = random.choice(temp)
+    number = random.choice(numbers)
+    string1,string2 = randomly_capitalize(string1),randomly_capitalize(string2)
+    final_string,f = merge_randomly(string1,string2)
+    final_string = insert_number(final_string,number,f,string1,string2)
+    flag = [0] * len(final_string)
+    final_string = charToSpecial(final_string)
+    final_string = numToSpecial(final_string)
+    final_string = add_punctuation(final_string)
+    C = len(final_string)
+    if C < 8:
+      for i in range(8 - C):
+        final_string += random.choice(special_chars)
+    if pwd_analyse(final_string):
+      #js.alert("Password:"+final_string)
+      js.document.getElementById('gen_pwd').innerHTML="Generated Password : "+final_string
+      break
+cc=create_proxy(pwd_generate)
+run1Button.addEventListener("click",cc)
+            </py-script>
+        <!-- </form> -->
+      </div>
+      <!-- <div id="password"></div> -->
+      <!-- <script src="popd.js"></script> -->
+
+    </div>
+  </main>
+
+  <footer class="my-5 pt-5 text-muted text-center text-small">
+    <p class="mb-1">&copy; 2023 NITK-ACM</p>
+    <ul class="list-inline">
+      <li class="list-inline-item"><a href="#">Privacy</a></li>
+      <li class="list-inline-item"><a href="#">Terms</a></li>
+      <li class="list-inline-item"><a href="#">Support</a></li>
+    </ul>
+  </footer>
+</div>
+
+  </body>
+</html>
