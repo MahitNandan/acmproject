@@ -47,9 +47,11 @@
             </py-config>
 <py-script>
 from pyodide import create_proxy
+
 runButton=js.document.getElementById('analyse')
 def pwd_analyse(event):
   import re
+
   from difflib import SequenceMatcher 
   import numpy as np
   password=js.document.getElementById('def').value
@@ -90,7 +92,7 @@ def pwd_analyse(event):
   if v == "\n" or v == " ":
     ret="Password cannot be a newline or space!" 
   
-  elif 8 <= len(v) <= 20:
+  elif 8 <= len(v) <= 25:
     if v.isalpha() and len(ret)==0:
       ret="Weak Password: Contains only alphabets"
     elif v.isnumeric() and len(ret)==0:
@@ -117,7 +119,7 @@ def pwd_analyse(event):
       if len(ret)==0:
         ret="Strong Password!"
   else:
-    ret="Password length must be 8-20 characters!"
+    ret="Password length must be 8-25 characters!"
   #js.alert(ret)
   js.document.getElementById('xyz').innerHTML=ret
 cc=create_proxy(pwd_analyse)
@@ -226,7 +228,7 @@ runButton.addEventListener("click",cc)
           <hr class="my-4">
           <button id="generate" class="w-100 btn btn-primary btn-lg" type="submit" >Generate Passwords</button>
           <p class="lead" id="gen_pwd">Password:</p>
-
+         
 <py-script>
 
 from pyodide import create_proxy
@@ -301,18 +303,17 @@ def pwd_generate(event):
       result = str2 + str1
     return result,flag
   def charToSpecial(s):
-    for char in s:
+    for i in range(len(s)):
+      char=s[i]
       if char in c2s:
         s = s.replace(char,c2s[char])
-        flag[i]=1
     return s
-  def numToSpecial(s):
+  def numToSpecial(s,flag):
     for i in range(len(s)):
       num=s[i]
-      if flag[i]==0:
-        if num in n2s:
-          s=s.replace(num,n2s[num])
-          break
+      if s[i] in n2s and flag[i]==0:
+        s=s[:i]+n2s[s[i]]+s[i+1:]
+        break
     return s
   def insert_number(s,n,f,str1,str2):
     flag = random.randint(0, 2)
@@ -328,12 +329,44 @@ def pwd_generate(event):
   def add_punctuation(s):
     return s+random.choice(punc)
   import re
+  from difflib import SequenceMatcher 
+  import numpy as np
   def pwd_analyse(password):
     patterns=['gan', 'ure', 'kata', 'rina', 'kat', 'rin', 'west', 'she', 'incognit', 'illie', 'bill', 'lineage', 'age123', 'ali', 'emon', 'crack', 'gen', 'ilove', 'ie1', 'times', 'mes', 'what', 'miss', 'wwwww', 'brandon', 'brave', 'med', 'mohamme', 'hamm', 'daniel', 'ley', 'y12', 'ard', 'dor', 'the', 'leedsu', 'iddqd8', 'wood', 'micr', 'bug', 'ladybug', 'buffy', 'uffy', 'sophie', 'laketaho', 'ket', 'pic', 'man', 'onal', 'rona', 'nald', 'way', 'ent', 'sarah', 'ton', 'jgj', 'gjhn', 'ste', 'ucks', 'let', 'key', 'fuck', 'one', 'ner', 'oner', 'loo', 'georg', 'erchief', 'master', 'ick', 'alex', 'ania', 'nia', 'ani', '123456789', '123456', 'ELE', '111111', 'erico', 'sych', 'psych', 'anthon', 'ant', 'ny1', 'ierr', 'red', 'fre', 'fred', 'heel', 'tar', 'tarheel', 'hee', 'fktrc', 'fkt', 'petite', 'etit', 'eti', 'bart', 'art', 'ette', 'laudi', 'claudiu', 'lau', 'mar', 'tor', 'victo', 'tori', 'mpton', 'hampton', 'pok', 'omas', 'toma', 'tone', 'get', 'geto', 'etone', 'dfcbk', 'dfcbkmtd', 'asdfgh12', 'asdfgh', 'asd', 'angel', 'golfer', 'golfer2', 'golf', 'fer', 'nny', 'simon', 'ock', 'aze', 'zer', 'oof', 'chris', 'ris', 'ewa', 'pro', 'ron', 'ipper', 'ets', 'hyper', 'ter123', 'azz', 'ster', 'big', 'lat', 'boob', 'ers', 'start', 'art1', 'sta', 'star', 'ippo', 'hippo', 'ipp', 'uke', 'jose', 'teddy', 'teddyb', 'ONNIE', 'lan', 'ANN', 'ANNON', 'dre', 'reyf', 'password', 'min', 'egirl', 'girl', 'ceg', 'surfin', 'lvbnhb', 'a20', '2002', 'newpass', 'new', 'gged', 'agge', 'ged', 'pets', 'trumpet', 'sco', 'nger', 'bur', 'blue', 'andy', 'run', 'illy', 'lly', 'kers', 'sun', 'ball', 'rri', 'mor', 'rocket', 'goc', 'edward', 'harlie', 'charlie', 'charl', 'iss', 'bastar', 'meri', 'omm', 'mmy', 'momm', '123', 'cab', 'ible', 'indi', 'head', 'edskins', '2010', 'erlin', 'erlin1', 'lin1', 'merlin', 'in1', 'lin', 'er1', 'good', 'asa', 'asan', 'mer', 'ephan', 'tephanie', 'cruise', 'xplo', 'explo', 'ally', 'apple', 'apples', 'appl', 'les', 'app', 'str', 'shan', 'shane1', 'shane', 'sha', 'ari', 'ustin', 'fish1', 'fish', 'ish1', 'char', 'cha', 'ain', 'bos', 'un1', 'mike', 'cobra', 'weapon', 'noo', 'snoo', 'aaaa', 'aaa', 'aaaaa', 'qwert', 'qwerty', 'qwer', 'dog', 'rea', 'kore', 'kor', '1234', 'music', 'katie', 'ati', 'layer', 'pla', '1qaz', 'qqqq', 'qqq', '5150', 'der', 'ander', 'ing', 'ora', 'prior', 'pri', 'SCO', 'sexy', 'atali', 'tali', 'sm4llvil', 'ena', 'foot', 'qwertyuiop12345', 'cele', 'lit', 'kis', 'rry', 'erry', '54321', 'aba', 'dad', 'cnbr', 'nbr', 'birthday', 'yjdf', 'jdf', 'roman', 'john', 'imm', 'can', 'anon1', 'non', 'ell', 'well', 'iddle', 'dles', 'hoo', 'ester', 'fytxrf', 'asdf', 'asdfg', 'cape', 'ole', 'pol', 'abell', 'hot', 'tre', 'hotr', 'hol', 'qazwsxedc1', 'qazwsxedc', 'bubb', 'ite', 'favorite', 'avo', 'fire', 'kman', 'uck', 'ckman', 'che', 'ar1', 'celtic', 'elt', 'black', 'ara', 'ova', 'camel', 'came', 'cam', 'ela', 'mnbvcxz', 'vert', 'pervert', 'joe', 'losangel', 'ero', 'cool', 'ool', 'boy', 'ERS', 'diamond', 'ORD', 'squi', 'olo', '12345', 'werty1234', 'werty12345', 'oron', 'ronto', 'toro', 'tto', 'james', 'er22', 'tiger', 'madelein', 'del', 'RIA', 'MARI', 'MAR', 'ugs', 'dragon', 'night', 'cali', 'kin', 'onnie', 'nnie', 'ord', 'eggie', 'gie', 'reg', 'ller', 'alle', '200', 'ter', 'oun', 'ever', 'jesus', 'sweet', 'krist', '777', 'corpio', 'orpio', 'ach', 'en1', 'even1', 'anderso', 'erso', 'ders', 'anders', 'blood', 'lood', 'banan', 'david', 'tha', 'abet', 'elizabe', 'bet', 'ford', 'inte', 'zxc', 'wil', 'uddy', 'son', 'mag', 'guy', 'pan', 'abela', 'bab', 'land', 'atch', 'long', 'zzzz1', 'zzzz', 'ill', 'maxim', 'maximil', 'imi', 'oulou', 'ulou', 'mou', 'oul', 'ran', 'soccer', 'ashley', 'bingo', 'ack', 'bon', 'fffff', 'peter', '1995', 'dima', 'dima19', '199', 'a19', 'a1995', 'alesh', 'ales', 'lesh', 'esha', 'ker', 'super', 'tro', 'oot', 'ootball', 'BIG', 'atl', 'andro', 'sand', 'sandr', 'san', 'bigd', 'bigdu', 'olphin1', 'phin', 'orno', 'fhtym', 'gfh', 'ling', 'ili', 'free', 'sus', 'sex', 'a198', 'anna19', '1986', 'minota', 'des', 'destro', 'ico', 'mustan', 'guita', 'ndrea', 'bitch', 'cent', 'clement', 'ment', 'lon', 'onl', 'con', 'abby', '234', '1q2', '2345', 'ore', 'horny', 'champ', 'gemini1', 'emin', 'ini11', 'emi', 'rill', 'dio', 'adi', 'adio', 'hole', 'pa123', 'a123', 'ann', 'nne', 'ean', 'ave', 'jxrf', 'har', 'pee', 'per', 'ance', '3qq', '123123q', 'linda', 'martin', 'shi', 'umpy', '6666', 'itty', 'custom', 'cus', 'ust', 'jack', 'ass', 'pass', 'green', 'call', 'lla', 'rami', 'ett', 'llllll', 'line', 'ome', 'hello', 'flb', 'byf', 'dar', 'rrrr', 'rrrrrr']
+    exemplars=['blackdog', 'golf1', 'enter', 'libero', 'comicsans', 'gfhjkl', 'mora', 'fluke', 'dfytxrf', 'edwardcullen', 'devil', 'samba1', 'keith', 'dog123', 'jeffery', 'PUSSIES', 'TINA', 'master2', 'orion2', 'cumshots', 'cleaners', 'stell', 'lollo', 'earth1', 'deecee', 'blown', 'boston', 'bertha1', 'bowler', 'grow', 'arie', 'jacks', 'fallout3', 'deamon', 'gauss', 'soccer3', '2606642yra', 'scarred', 'eastwood', 'peaches', 'lucky1', 'copyright', 'firewire', 'berlin1', 'pantys', 'websolutionssu', 'blue25', 'michaell', 'nathal', 'bigtim', 'mala', 'fuckyou7', 'jena', 'mani', 'dragon23', 'eremin', 'nation', '8PHroWZ622', 'littlecunt', 'poop69', 'josiah', 'melony', 'korea', 'iloveyou2', 'bmwm3', 'beto', 'unicron', 'alex1998', 'pookie', 'sigma', 'entertainment', 'sabado', 'hogman', 'Rusty1', 'tadlock', 'cfvfzcxfcnkbdfz', 'h_froeschl7', 'stangs', 'petros', 'cristan', 'kimota', 'ronnie1', 'MADMAN', 'grammar', 'fyutkbyrf', 'hjvfyjdf', 'bobette', 'fishon', 'BEER', 'picker', 'artboy', 'banan', 'CARTER', 'late', 'chane', 'spurs1', 'bigdadd', 'contest', 'foutre', '1q2w3', 'valenti', 'cooking1', 'hubble', 'silver69', 'money2', 'horatio', 'amelia', 'bobbbb', 'brand', 'dindin', 'pussy50', 'bruce', 'alpha1', 'azxcvbnm', 'rachel1', 'nhfdvfnjkju123', 'boogies', 'mooser', 'stoker', 'fred1', 'twisty', 'ireland', 'internal', 'david15', '3f3fphT7oP', 'merger', 'nine', 'nightime', 'severian', 'teenie', 'huangjin1987', 'revers', 'fallon', 'gopats', 'Kimberly', 'sanfran', 'titotito', 'zsxmr7sztmr', 'hello123', 'sally', 'boob', 'asd321', 'redhat', 'liao', 'dima1996', 'olaola', 'ballet', 'michigan', 'redsea', 'heller', 'hanson', 'lurcher', 'dude1', 'renard', 'dance', 'raser', 'elizabe', 'crazy4u', 'sexygirl', 'LAUREN', 'passwordpassword', 'den1020834880', 'aviles', 'munter', 'kenshin1', 'deaddead', '123456789a', 'wildcat7', 'mine11', 'newera', 'miras', 'kissmy', 'add123', 'ratcat', 'bureau', 'a12345', 'pelus', 'shocker1', 'forfar', 'audia6', '121212q', 'romana', 'ariana', 'tree1', 'seren', 'savant', 'hummer', 'moocow', 'feline', 'killer21', 'mcgill', 'luvluv', 'shop', 'solene', 'cunning', 'bunty123', 'vladimi', 'hither', 'ragger', 'killas', '1967gto', 'a7777777', 'Year2005', 'bubbas', 'austi', 'edcrfv', 'steph1', 'kassie', 'infest', 'alone', '111111d', 'crjhjcnm', 'sadie123', 'passion', 'marcelo1', 'sasha', 'hacke', 'wesley', 'thrush', 'sammyg', 'chester', 'malina', 'papas', 'empress', 'andrew', 'xxxp455w0rd5', 'chelly', 'couple', 'murano', 'gfhfif', 'steelroa', 'uhfvjnf', 'Guitar', 'bahama', 'lapper', 'qweasdzx', 'joker123', 'blueboy', 'tatonka', 'backbone', 'sachin', 'Phillip', 'poolboy', 'italia', 'elena1977', 'player22', 'alex1', 'ytdpkjvfti', 'explosiv', 'charoot', 'LOST4815162342', 'spide', 'werder', 'carlin', 'check1', 'qaz123', 'rosalie', 'maggie', 'altair', 'basses', 'george1', 'chanchal', 'mention', 'cottage1', 'socks', 'anton1992', 'caveman1', 'pokemon', 'taro', 'natasa', 'pier', 'airman', 'Hd764nW5d7E1vbv', 'pinpin', 'SCOOBY', 'honor', 'scorpio', 'hott', 'pirelli', 'ipo54tj45uy856', 'Yellow', 'ababagalamaga', 'ziff', '1234567z', 'tiggy1', 'constitution', 'gangsta', 'gthtrfnbgjkt', 'mama12', 'popova', 'fynfyfyfhbde', 'assa123', 'favorite', 'basketball1', 'cristo', 'payman', 'strats', 'runn', 'chiens', 'bigdon', 'beating', 'dudelove', 'lhbjkjubz2957704', 'picass', 'billing', 'LITTLE', 'jimbo1', 'canon1', 'pepper12', 'NICK1234-rem936', 'loser1', 'angeli', 'Californ', 'tootall', 'chipper1', 'darren', 'siege', 'junior8', 'alex2010', 'cheese2', 'franki', 'netscape', 'getin1', 'elliott', 'baltimore', 'springs', 'kakawka', '237081a', 'fink', 'chippy', 'butte', 'daniel20', 'mariya', 'janet', 'greentea', 'barman', 'elric1', 'motorhead', 'theta', 'thunder', 'mess', 'nikolay', 'freetime', 'honda2000', 'lickin', 'sexyboy', 'dustoff', 'fcnfkfdbcnf', 'vfiekmrf', 'john1', 'schwab', 'typer', '070793monolit', 'vitebsk', 'sampson1', 'Fffff1', 'INSTALLDEVIC', 'spanky', 'yfnecz', 'skate1', 'loveit', 'anutka', 'hardcore', 'shirt', 'Purple', 'imcool', 'banderos', 'hokies', 'bulldog', 'light2', '1234ab', 'papito', 'june23', 'beaks', 'banker', 'morgan', 'august20', '123qazwsxedc', 'burnside', 'huntsman', 'coors', 'beowolf', 'rifle', 'oneway', 'robotic', 'mather', 'emile', 'cascade', 'R030989', 'chrisi', 'cando', 'baba', 'maddy1', 'teeter', 'snack', 'linus1', 'rimini', 'punch', 'ready', 'deltas', 'conny', 'super', 'harry2', 'tiger00', 'conger', 'chimay', 'JASON', 'actors', 'polaris', 'famili', 'farley', 'merit', 'calle', 'westerns']
     ret=''
     v=str(password)
-    if 8 <= len(v) <= 20:
+    def word2vec(word):
+      from collections import Counter
+      from math import sqrt
+
+      # count the characters in word
+      cw = Counter(word)
+      # precomputes a set of the different characters
+      sw = set(cw)
+      # precomputes the "length" of the word vector
+      lw = sqrt(sum(c*c for c in cw.values()))
+
+      # return a tuple
+      return cw, sw, lw
+    def cosdis(v1, v2):
+      # which characters are common to the two words?
+      common = v1[1].intersection(v2[1])
+      # by definition of cosine distance we have
+      return sum(v1[0][ch]*v2[0][ch] for ch in common)/v1[2]/v2[2]
+    def longest_Substring(s1,s2):
+      seq_match=SequenceMatcher(None,s1,s2)
+      match = seq_match.find_longest_match(0, len(s1), 0, len(s2)) 
+      # return the longest substring 
+      if (match.size!=0): 
+        return (s1[match.a: match.a + match.size])  
+      else: 
+        return ''
+    if 8 <= len(v) <= 25:
       #checks for patterns in password
+      for i in range(len(exemplars)):
+        if cosdis(word2vec(v),word2vec(exemplars[i]))>0.5 and len(longest_Substring(v,exemplars[i]))>2:
+          return False
       for pattern in patterns:
         if pattern in v:
           return False
@@ -358,8 +391,12 @@ def pwd_generate(event):
     final_string,f = merge_randomly(string1,string2)
     final_string = insert_number(final_string,number,f,string1,string2)
     flag = [0] * len(final_string)
+    temp=str(final_string)
     final_string = charToSpecial(final_string)
-    final_string = numToSpecial(final_string)
+    for i in range(len(temp)):
+      if temp[i]!=final_string[i]:
+        flag[i]=1
+    final_string = numToSpecial(final_string,flag)
     final_string = add_punctuation(final_string)
     C = len(final_string)
     if C < 8:
