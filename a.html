@@ -43,15 +43,18 @@
             <button id="analyse" type="submit" class="btn btn-secondary">Analyse</button>          
 
             <py-config>
-              packages = ["numpy"]
+              packages = ["numpy","pandas"]
+              [[fetch]]
+                  files = ["./breached.csv"]
             </py-config>
+
 <py-script>
 from pyodide import create_proxy
 
 runButton=js.document.getElementById('analyse')
 def pwd_analyse(event):
   import re
-
+  import pandas as pd
   from difflib import SequenceMatcher 
   import numpy as np
   password=js.document.getElementById('def').value
@@ -60,6 +63,8 @@ def pwd_analyse(event):
   ret=''
   v=str(password)
   f=type(v)
+  df=pd.read_csv("./breached.csv")
+  pwds=df['passwords'].tolist()
   def word2vec(word):
     from collections import Counter
     from math import sqrt
@@ -98,8 +103,10 @@ def pwd_analyse(event):
     elif v.isnumeric() and len(ret)==0:
       ret="Weak Password:Contains only numbers"
     #checks for patterns in password
+    if (v in pwds) and len(ret)==0:
+      ret="Weak Password:Password is an already breached password"
     for i in range(len(exemplars)):
-      if cosdis(word2vec(v),word2vec(exemplars[i]))>0.5 and len(longest_Substring(v,exemplars[i]))>2:
+      if cosdis(word2vec(v),word2vec(exemplars[i]))>0.5 and len(longest_Substring(v,exemplars[i]))>2 and len(ret)==0:
         ret="Weak Password : Weak patterns have been recognized in the password"
     for pattern in patterns:
       if (pattern in v) and len(ret)==0:
